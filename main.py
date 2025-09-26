@@ -26,9 +26,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Create FastMCP instance
-mcp = FastMCP("FloatChat-Argo",
-              port=8050,
-    stateless_http=True)
+mcp = FastMCP("FloatChat-Argo")
 
 # Global database pool
 db_pool: Optional[asyncpg.Pool] = None
@@ -368,6 +366,6 @@ async def cleanup():
 if __name__ == "__main__":
     print("Running server with Streamable HTTP transport")
     try:
-        mcp.run(transport="streamable-http")
+        mcp.run(transport="http")
     finally:
         asyncio.run(cleanup())
