@@ -18,7 +18,6 @@ from typing import Any, Dict, Optional
 import asyncpg
 from fastmcp import FastMCP
 from dotenv import load_dotenv
-
 load_dotenv()
 
 # Configure logging
@@ -78,7 +77,7 @@ def validate_query_safety(query: str) -> bool:
     return True
 
 
-@mcp.tool()
+@mcp.tool
 async def run_query(query: str) -> Dict[str, Any]:
     """Execute a safe, read-only SQL query on the Argo database. Only SELECT statements are allowed."""
     await ensure_connection()
@@ -127,7 +126,7 @@ async def run_query(query: str) -> Dict[str, Any]:
             raise
 
 
-@mcp.tool()
+@mcp.tool
 async def list_tables() -> Dict[str, Any]:
     """Returns all table names in the database"""
     await ensure_connection()
@@ -159,7 +158,7 @@ async def list_tables() -> Dict[str, Any]:
             raise
 
 
-@mcp.tool()
+@mcp.tool
 async def get_schema(table_name: str) -> Dict[str, Any]:
     """Returns the schema of a given table including columns, types, constraints, and indexes"""
     await ensure_connection()
@@ -228,7 +227,7 @@ async def get_schema(table_name: str) -> Dict[str, Any]:
             raise
 
 
-@mcp.tool()
+@mcp.tool
 async def describe_database() -> Dict[str, Any]:
     """Returns a comprehensive overview of the database structure with all tables and their column definitions"""
     await ensure_connection()
@@ -296,7 +295,7 @@ async def describe_database() -> Dict[str, Any]:
             raise
 
 
-@mcp.tool()
+@mcp.tool
 async def get_indexes(table_name: str) -> Dict[str, Any]:
     """Returns index definitions for a given table (useful for query optimization)"""
     await ensure_connection()
@@ -365,12 +364,16 @@ async def cleanup():
 
 async def main():
     """Main async function to run the server."""
-    print("Running server with Streamable HTTP transport")
-    try:
-        await mcp.run_async(transport="streamable-http")
-    finally:
-        await cleanup()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    print("Running server with Streamable HTTP transport")
+
+    async def run():
+        try:
+            await mcp.run_async(transport="streamable-http", host="0.0.0.0", port=8080)
+        finally:
+            await cleanup()
+
+    asyncio.run(run())
+
